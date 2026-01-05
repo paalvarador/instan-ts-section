@@ -1,254 +1,225 @@
-import { useEffect } from "react";
-import type {
-  ActionFunctionArgs,
-  HeadersFunction,
-  LoaderFunctionArgs,
-} from "react-router";
-import { useFetcher } from "react-router";
-import { useAppBridge } from "@shopify/app-bridge-react";
+import type { LoaderFunctionArgs } from "react-router";
+import { useLoaderData, useOutletContext } from "react-router";
+import {
+  Page,
+  Layout,
+  Text,
+  Card,
+  Button,
+  BlockStack,
+  List,
+  InlineStack,
+  Badge,
+  Divider,
+} from "@shopify/polaris";
+import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { boundary } from "@shopify/shopify-app-react-router/server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
-
-  return null;
-};
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($product: ProductCreateInput!) {
-        productCreate(product: $product) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        product: {
-          title: `${color} Snowboard`,
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
-
-  const product = responseJson.data!.productCreate!.product!;
-  const variantId = product.variants.edges[0]!.node!.id!;
-
-  const variantResponse = await admin.graphql(
-    `#graphql
-    mutation shopifyReactRouterTemplateUpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-      productVariantsBulkUpdate(productId: $productId, variants: $variants) {
-        productVariants {
-          id
-          price
-          barcode
-          createdAt
-        }
-      }
-    }`,
-    {
-      variables: {
-        productId: product.id,
-        variants: [{ id: variantId, price: "100.00" }],
-      },
-    },
-  );
-
-  const variantResponseJson = await variantResponse.json();
+  const { session } = await authenticate.admin(request);
 
   return {
-    product: responseJson!.data!.productCreate!.product,
-    variant:
-      variantResponseJson!.data!.productVariantsBulkUpdate!.productVariants,
+    shopName: session.shop,
   };
 };
 
 export default function Index() {
-  const fetcher = useFetcher<typeof action>();
+  const { shopName } = useLoaderData<typeof loader>();
+  const { locale } = useOutletContext<{ locale: string }>();
 
-  const shopify = useAppBridge();
-  const isLoading =
-    ["loading", "submitting"].includes(fetcher.state) &&
-    fetcher.formMethod === "POST";
-
-  useEffect(() => {
-    if (fetcher.data?.product?.id) {
-      shopify.toast.show("Product created");
-    }
-  }, [fetcher.data?.product?.id, shopify]);
-
-  const generateProduct = () => fetcher.submit({}, { method: "POST" });
+  const t = {
+    title: locale === "es" ? "Instant TS Sections" : "Instant TS Sections",
+    welcome:
+      locale === "es" ? `Bienvenido, ${shopName}` : `Welcome, ${shopName}`,
+    subtitle:
+      locale === "es"
+        ? "Activa barras de envío gratis, sellos de confianza y ofertas con urgencia para aumentar tus conversiones."
+        : "Enable free shipping bars, trust badges, and urgency offers to increase conversions.",
+    stepsTitle: locale === "es" ? "Primeros pasos" : "Getting started",
+    step1:
+      locale === "es"
+        ? "Activa el App Embed de Free Shipping Bar desde el Editor de Temas."
+        : "Enable the Free Shipping Bar app embed from the Theme Editor.",
+    step2:
+      locale === "es"
+        ? "Agrega la sección Secure Payments en la página de producto."
+        : "Add the Secure Payments section to your product page.",
+    step3:
+      locale === "es"
+        ? "Configura el Flash Banner Offer para crear urgencia en tus promociones."
+        : "Configure the Flash Banner Offer to create urgency in your promotions.",
+    openEditor: locale === "es" ? "Abrir Editor de Temas" : "Open Theme Editor",
+    extensionsTitle:
+      locale === "es" ? "Extensiones disponibles" : "Available extensions",
+    supportTitle: locale === "es" ? "Soporte" : "Support",
+    supportText:
+      locale === "es"
+        ? "¿Necesitas ayuda con la configuración? Nuestro equipo puede ayudarte."
+        : "Need help with setup? Our team is here to help.",
+  };
 
   return (
-    <s-page heading="Shopify app template">
-      <s-button slot="primary-action" onClick={generateProduct}>
-        Generate a product
-      </s-button>
+    <Page>
+      <TitleBar title={t.title} />
 
-      <s-section heading="Congrats on creating a new Shopify app 🎉">
-        <s-paragraph>
-          This embedded app template uses{" "}
-          <s-link
-            href="https://shopify.dev/docs/apps/tools/app-bridge"
-            target="_blank"
-          >
-            App Bridge
-          </s-link>{" "}
-          interface examples like an{" "}
-          <s-link href="/app/additional">additional page in the app nav</s-link>
-          , as well as an{" "}
-          <s-link
-            href="https://shopify.dev/docs/api/admin-graphql"
-            target="_blank"
-          >
-            Admin GraphQL
-          </s-link>{" "}
-          mutation demo, to provide a starting point for app development.
-        </s-paragraph>
-      </s-section>
-      <s-section heading="Get started with products">
-        <s-paragraph>
-          Generate a product with GraphQL and get the JSON output for that
-          product. Learn more about the{" "}
-          <s-link
-            href="https://shopify.dev/docs/api/admin-graphql/latest/mutations/productCreate"
-            target="_blank"
-          >
-            productCreate
-          </s-link>{" "}
-          mutation in our API references.
-        </s-paragraph>
-        <s-stack direction="inline" gap="base">
-          <s-button
-            onClick={generateProduct}
-            {...(isLoading ? { loading: true } : {})}
-          >
-            Generate a product
-          </s-button>
-          {fetcher.data?.product && (
-            <s-button
-              onClick={() => {
-                shopify.intents.invoke?.("edit:shopify/Product", {
-                  value: fetcher.data?.product?.id,
-                });
-              }}
-              target="_blank"
-              variant="tertiary"
-            >
-              Edit product
-            </s-button>
-          )}
-        </s-stack>
-        {fetcher.data?.product && (
-          <s-section heading="productCreate mutation">
-            <s-stack direction="block" gap="base">
-              <s-box
-                padding="base"
-                borderWidth="base"
-                borderRadius="base"
-                background="subdued"
-              >
-                <pre style={{ margin: 0 }}>
-                  <code>{JSON.stringify(fetcher.data.product, null, 2)}</code>
-                </pre>
-              </s-box>
+      <Layout>
+        {/* MAIN COLUMN */}
+        <Layout.Section>
+          <BlockStack gap="500">
+            {/* HEADER */}
+            <Card>
+              <BlockStack gap="300">
+                <Text as="h1" variant="headingLg">
+                  {t.welcome}
+                </Text>
+                <Text as="p" variant="bodyMd">
+                  {t.subtitle}
+                </Text>
+              </BlockStack>
+            </Card>
 
-              <s-heading>productVariantsBulkUpdate mutation</s-heading>
-              <s-box
-                padding="base"
-                borderWidth="base"
-                borderRadius="base"
-                background="subdued"
-              >
-                <pre style={{ margin: 0 }}>
-                  <code>{JSON.stringify(fetcher.data.variant, null, 2)}</code>
-                </pre>
-              </s-box>
-            </s-stack>
-          </s-section>
-        )}
-      </s-section>
+            {/* ACTIVATION STEPS */}
+            <Card>
+              <BlockStack gap="400">
+                <Text as="h2" variant="headingMd">
+                  {t.stepsTitle}
+                </Text>
 
-      <s-section slot="aside" heading="App template specs">
-        <s-paragraph>
-          <s-text>Framework: </s-text>
-          <s-link href="https://reactrouter.com/" target="_blank">
-            React Router
-          </s-link>
-        </s-paragraph>
-        <s-paragraph>
-          <s-text>Interface: </s-text>
-          <s-link
-            href="https://shopify.dev/docs/api/app-home/using-polaris-components"
-            target="_blank"
-          >
-            Polaris web components
-          </s-link>
-        </s-paragraph>
-        <s-paragraph>
-          <s-text>API: </s-text>
-          <s-link
-            href="https://shopify.dev/docs/api/admin-graphql"
-            target="_blank"
-          >
-            GraphQL
-          </s-link>
-        </s-paragraph>
-        <s-paragraph>
-          <s-text>Database: </s-text>
-          <s-link href="https://www.prisma.io/" target="_blank">
-            Prisma
-          </s-link>
-        </s-paragraph>
-      </s-section>
+                <List>
+                  <List.Item>
+                    <InlineStack gap="200">
+                      <Badge tone="attention">1</Badge>
+                      <Text as="span">{t.step1}</Text>
+                    </InlineStack>
+                  </List.Item>
 
-      <s-section slot="aside" heading="Next steps">
-        <s-unordered-list>
-          <s-list-item>
-            Build an{" "}
-            <s-link
-              href="https://shopify.dev/docs/apps/getting-started/build-app-example"
-              target="_blank"
-            >
-              example app
-            </s-link>
-          </s-list-item>
-          <s-list-item>
-            Explore Shopify&apos;s API with{" "}
-            <s-link
-              href="https://shopify.dev/docs/apps/tools/graphiql-admin-api"
-              target="_blank"
-            >
-              GraphiQL
-            </s-link>
-          </s-list-item>
-        </s-unordered-list>
-      </s-section>
-    </s-page>
+                  <List.Item>
+                    <InlineStack gap="200">
+                      <Badge tone="attention">2</Badge>
+                      <Text as="span">{t.step2}</Text>
+                    </InlineStack>
+                  </List.Item>
+
+                  <List.Item>
+                    <InlineStack gap="200">
+                      <Badge tone="attention">3</Badge>
+                      <Text as="span">{t.step3}</Text>
+                    </InlineStack>
+                  </List.Item>
+                </List>
+
+                <InlineStack align="end">
+                  <Button
+                    variant="primary"
+                    url="shopify:admin/themes/current/editor"
+                    target="_top"
+                  >
+                    {t.openEditor}
+                  </Button>
+                </InlineStack>
+              </BlockStack>
+            </Card>
+
+            {/* EXTENSIONS */}
+            <Card>
+              <BlockStack gap="400">
+                <Text as="h2" variant="headingMd">
+                  {t.extensionsTitle}
+                </Text>
+
+                <Divider />
+
+                <Layout>
+                  <Layout.Section>
+                    <Card>
+                      <BlockStack gap="200">
+                        <Text as="h3" variant="headingSm">
+                          Free Shipping Bar
+                        </Text>
+                        <Text as="p" variant="bodyMd">
+                          {locale === "es"
+                            ? "Muestra al cliente cuánto le falta para obtener envío gratis."
+                            : "Show customers how close they are to free shipping."}
+                        </Text>
+                        <Badge tone="warning">
+                          {locale === "es" ? "App Embed" : "App Embed"}
+                        </Badge>
+                      </BlockStack>
+                    </Card>
+                  </Layout.Section>
+
+                  <Layout.Section>
+                    <Card>
+                      <BlockStack gap="200">
+                        <Text as="h3" variant="headingSm">
+                          Secure Payments
+                        </Text>
+                        <Text as="p" variant="bodyMd">
+                          {locale === "es"
+                            ? "Muestra métodos de pago seguros para generar confianza."
+                            : "Display trusted payment methods to increase confidence."}
+                        </Text>
+                        <Badge>{locale === "es" ? "Sección" : "Section"}</Badge>
+                      </BlockStack>
+                    </Card>
+                  </Layout.Section>
+
+                  <Layout.Section>
+                    <Card>
+                      <BlockStack gap="200">
+                        <Text as="h3" variant="headingSm">
+                          Flash Banner Offer
+                        </Text>
+                        <Text as="p" variant="bodyMd">
+                          {locale === "es"
+                            ? "Crea urgencia con un temporizador de ofertas."
+                            : "Create urgency with a countdown offer banner."}
+                        </Text>
+                        <Badge>{locale === "es" ? "Sección" : "Section"}</Badge>
+                      </BlockStack>
+                    </Card>
+                  </Layout.Section>
+                </Layout>
+              </BlockStack>
+            </Card>
+          </BlockStack>
+        </Layout.Section>
+
+        {/* SIDEBAR */}
+        <Layout.Section variant="oneThird">
+          <BlockStack gap="500">
+            <Card>
+              <BlockStack gap="200">
+                <Text as="h2" variant="headingMd">
+                  App status
+                </Text>
+                <InlineStack align="space-between">
+                  <Text as="span" variant="bodyMd">
+                    Status
+                  </Text>
+                  <Badge tone="attention">
+                    {locale === "es" ? "Pendiente de activar" : "Pending setup"}
+                  </Badge>
+                </InlineStack>
+              </BlockStack>
+            </Card>
+
+            <Card>
+              <BlockStack gap="200">
+                <Text as="h2" variant="headingMd">
+                  {t.supportTitle}
+                </Text>
+                <Text as="p" variant="bodyMd">
+                  {t.supportText}
+                </Text>
+                <Button variant="secondary" url="mailto:support@yourapp.com">
+                  {locale === "es" ? "Contactar soporte" : "Contact support"}
+                </Button>
+              </BlockStack>
+            </Card>
+          </BlockStack>
+        </Layout.Section>
+      </Layout>
+    </Page>
   );
 }
-
-export const headers: HeadersFunction = (headersArgs) => {
-  return boundary.headers(headersArgs);
-};

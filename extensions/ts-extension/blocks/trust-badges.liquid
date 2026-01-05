@@ -26,36 +26,27 @@
   <p style="font-size: 14px; font-weight:bold; margin-bottom: 8px;">{{ block.settings.title }}</p>
   <div class="trust-badges-flex-{{ block.id }}">
     {%- if block.settings.show_visa -%}
-      <img
-        src="{{ "cc-visa-brands-solid-full.svg" | asset_url }}"
-        width="{{ block.settings.icon_width }}"
-        height="auto"
-        alt="Visa"
-      >
+      <div style="width: {{ block.settings.icon_width }}px;">
+        {{ 'visa' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+      </div>
     {%- endif -%}
+
     {%- if block.settings.show_master -%}
-      <img
-        src="{{ "cc-mastercard-brands-solid-full.svg" | asset_url }}"
-        width="{{ block.settings.icon_width }}"
-        height="auto"
-        alt="Mastercard"
-      >
+      <div style="width: {{ block.settings.icon_width }}px;">
+        {{ 'master' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+      </div>
     {%- endif -%}
+
     {%- if block.settings.show_paypal -%}
-      <img
-        src="{{ "cc-paypal-brands-solid-full.svg" | asset_url }}"
-        width="{{ block.settings.icon_width }}"
-        height="auto"
-        alt="Paypal"
-      >
+      <div style="width: {{ block.settings.icon_width }}px;">
+        {{ 'paypal' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+      </div>
     {%- endif -%}
+
     {%- if block.settings.show_amex -%}
-      <img
-        src="{{ "cc-amex-brands-solid-full.svg" | asset_url }}"
-        width="{{ block.settings.icon_width }}"
-        height="auto"
-        alt="American Express"
-      >
+      <div style="width: {{ block.settings.icon_width }}px;">
+        {{ 'american_express' | payment_type_svg_tag: class: 'icon icon--full-color' }}
+      </div>
     {%- endif -%}
   </div>
 </div>

@@ -2,6 +2,8 @@ import "@shopify/shopify-app-react-router/adapters/node";
 import {
   ApiVersion,
   AppDistribution,
+  BillingInterval,
+  BillingReplacementBehavior,
   shopifyApp,
 } from "@shopify/shopify-app-react-router/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
@@ -13,6 +15,19 @@ const shopify = shopifyApp({
   apiVersion: ApiVersion.October25,
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
+  billing: {
+    "Plan Basic": {
+      lineItems: [
+        {
+          amount: 4.99,
+          currencyCode: "USD",
+          interval: BillingInterval.Every30Days,
+        },
+      ],
+      trialDays: 7,
+      replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+    },
+  },
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
