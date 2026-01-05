@@ -1,0 +1,104 @@
+<style>
+  .flash-banner-{{ block.id }} {
+    background: {{ block.settings.gradient }};
+    color: {{ block.settings.text_color }};
+    padding: 20px;
+    text-align: center;
+    font-family: inherit;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  .flash-banner-{{ block.id }} .countdown-timer {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+  }
+</style>
+
+<div class="flash-banner-{{ block.id }}">
+  <span>{{ block.settings.message }}</span>
+  <div id="countdown-{{ block.id }}" class="countdown-timer">00:00:00</div>
+</div>
+
+<script>
+  (function() {
+    // Convertimos los ajustes del bloque a segundos totales
+    const hours = {{ block.settings.hours | default: 0 }};
+    const minutes = {{ block.settings.minutes | default: 0 }};
+    const seconds = {{ block.settings.seconds | default: 0 }};
+
+    let totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+
+    const timerElement = document.getElementById('countdown-{{ block.id }}');
+
+    function updateTimer() {
+      if (totalSeconds <= 0) {
+        timerElement.innerHTML = "00:00:00";
+        return;
+      }
+
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+
+      timerElement.innerHTML =
+        (h < 10 ? "0" : "") + h + ":" +
+        (m < 10 ? "0" : "") + m + ":" +
+        (s < 10 ? "0" : "") + s;
+
+      totalSeconds--;
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "t:blocks.flash_banner.title",
+  "target": "section",
+  "settings": [
+    { "type": "text", "id": "message", "label": "t:blocks.flash_banner.message", "default": "¡OFERTA TERMINA EN:" },
+    {
+      "type": "color_background",
+      "id": "gradient",
+      "label": "t:blocks.flash_banner.background",
+      "default": "linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,154,0,1) 100%)"
+    },
+    { "type": "color", "id": "text_color", "label": "t:blocks.flash_banner.text_color", "default": "#ffffff" },
+    { "type": "header", "content": "t:blocks.flash_banner.content" },
+    {
+      "type": "range",
+      "id": "hours",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "h",
+      "label": "t:blocks.flash_banner.hours",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "minutes",
+      "min": 0,
+      "max": 59,
+      "step": 1,
+      "unit": "m",
+      "label": "t:blocks.flash_banner.minutes",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "seconds",
+      "min": 0,
+      "max": 59,
+      "step": 1,
+      "unit": "s",
+      "label": "t:blocks.flash_banner.seconds",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

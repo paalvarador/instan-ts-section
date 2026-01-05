@@ -1,0 +1,85 @@
+<style>
+  .trust-badges-container-{{ block.id }} {
+    text-align: center;
+    margin: 15px 0;
+    width: 100%;
+  }
+  .trust-badges-flex-{{ block.id }} {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+  }
+  /* Esto evita que el tema estire las imágenes */
+  .trust-badges-flex-{{ block.id }} img {
+    width: {{ block.settings.icon_width }}px !important;
+    height: auto !important;
+    max-width: none !important;
+    min-width: auto !important;
+    display: inline-block !important;
+    object-fit: contain;
+  }
+</style>
+
+<div class="trust-badges-container-{{ block.id }}">
+  <p style="font-size: 14px; font-weight:bold; margin-bottom: 8px;">{{ block.settings.title }}</p>
+  <div class="trust-badges-flex-{{ block.id }}">
+    {%- if block.settings.show_visa -%}
+      <img
+        src="{{ "cc-visa-brands-solid-full.svg" | asset_url }}"
+        width="{{ block.settings.icon_width }}"
+        height="auto"
+        alt="Visa"
+      >
+    {%- endif -%}
+    {%- if block.settings.show_master -%}
+      <img
+        src="{{ "cc-mastercard-brands-solid-full.svg" | asset_url }}"
+        width="{{ block.settings.icon_width }}"
+        height="auto"
+        alt="Mastercard"
+      >
+    {%- endif -%}
+    {%- if block.settings.show_paypal -%}
+      <img
+        src="{{ "cc-paypal-brands-solid-full.svg" | asset_url }}"
+        width="{{ block.settings.icon_width }}"
+        height="auto"
+        alt="Paypal"
+      >
+    {%- endif -%}
+    {%- if block.settings.show_amex -%}
+      <img
+        src="{{ "cc-amex-brands-solid-full.svg" | asset_url }}"
+        width="{{ block.settings.icon_width }}"
+        height="auto"
+        alt="American Express"
+      >
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:blocks.trust_budges.title",
+  "target": "section",
+  "settings": [
+    { "type": "text", "id": "title", "label": "t:blocks.trust_budges.message", "default": "Pago 100% Seguro" },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Ancho de iconos",
+      "default": 40
+    },
+    { "type": "checkbox", "id": "show_visa", "label": "t:blocks.trust_budges.show_visa", "default": true },
+    { "type": "checkbox", "id": "show_master", "label": "t:blocks.trust_budges.show_mastercard", "default": true },
+    { "type": "checkbox", "id": "show_paypal", "label": "t:blocks.trust_budges.show_paypal", "default": true },
+    { "type": "checkbox", "id": "show_amex", "label": "t:blocks.trust_budges.show_amex", "default": true }
+  ]
+}
+{% endschema %}

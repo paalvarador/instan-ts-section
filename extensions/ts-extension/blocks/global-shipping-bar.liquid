@@ -1,0 +1,169 @@
+{%- if block.settings.enabled -%}
+  <script src="{{ 'confetti.js' | asset_url }}" defer></script>
+
+  <style>
+    /* Contenedor principal */
+    .app-embed-bar-{{ block.id }} {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      z-index: 2147483647 !important;
+      background: {{ block.settings.bg_color }} !important;
+      color: {{ block.settings.text_color }} !important;
+      padding: 12px 0 !important;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.4) !important;
+      display: block !important;
+    }
+
+    /* Contenedor de la barra (el fondo de la barra) */
+    .progress-outer-{{ block.id }} {
+      width: 85% !important;
+      max-width: 500px !important;
+      background-color: rgba(255,255,255,0.2) !important; /* Fondo translúcido */
+      height: 14px !important;
+      border-radius: 20px !important;
+      margin: 10px auto 0 !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(0,0,0,0.1) !important;
+      display: block !important;
+    }
+
+    /* La parte que se llena (la que debe tener color) */
+    #progress-fill-{{ block.id }} {
+      height: 100% !important;
+      width: 0%; /* Se controla por JS */
+      background: {{ block.settings.bar_fill_color }} !important;
+      /* Añadimos un brillo para que no parezca plomo */
+      background-image: linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%) !important;
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      display: block !important;
+    }
+
+    html { padding-top: 80px !important; }
+  </style>
+
+  <div class="app-embed-bar-{{ block.id }}">
+    <div
+      id="bar-text-{{ block.id }}"
+      style="text-align: center !important; font-weight: bold !important; font-family: sans-serif !important;"
+    >
+      Calculando envío...
+    </div>
+    <div class="progress-outer-{{ block.id }}">
+      <div id="progress-fill-{{ block.id }}"></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      let goalReached = false;
+
+      // Respaldo de seguridad: Cargar confetti si el asset falla
+      if (typeof confetti === 'undefined') {
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js";
+        script.async = true;
+        document.head.appendChild(script);
+      }
+
+      async function refreshBar() {
+        try {
+          const res = await fetch(window.Shopify.routes.root + 'cart.js');
+          const cart = await res.json();
+          const threshold = {{ block.settings.threshold | times: 100 }};
+
+          const textElement = document.getElementById('bar-text-{{ block.id }}');
+          const fillElement = document.getElementById('progress-fill-{{ block.id }}');
+
+          if (!textElement || !fillElement) return;
+
+          const percentage = Math.min((cart.total_price / threshold) * 100, 100);
+
+          // Actualizamos la barra de progreso
+          fillElement.style.setProperty('width', percentage + '%', 'important');
+          fillElement.style.setProperty('background-color', '{{ block.settings.bar_fill_color }}', 'important');
+
+          if (cart.total_price >= threshold) {
+            textElement.innerHTML = "{{ block.settings.success_message }}";
+
+            // LÓGICA DEL CONFETTI REFORZADA
+            if (!goalReached) {
+              if (typeof confetti === 'function') {
+                confetti({
+                  particleCount: 150,
+                  spread: 70,
+                  origin: { y: 0.2 },
+                  zIndex: 2147483647,
+                  ticks: 200
+                });
+                goalReached = true;
+              } else {
+                // Si la función aún no carga, reintentamos en 300ms
+                setTimeout(refreshBar, 300);
+              }
+            }
+          } else {
+            goalReached = false;
+            const remaining = ((threshold - cart.total_price) / 100).toLocaleString('en-US', {
+              style: 'currency', currency: cart.currency || 'USD'
+            });
+            textElement.innerHTML = "{{ block.settings.missing_message }}".replace('[amount]', remaining);
+          }
+        } catch (e) { console.error("Error App:", e); }
+      }
+
+      // Escuchar eventos de actualización del carrito
+      document.addEventListener('cart:updated', refreshBar);
+
+      const _fetch = window.fetch;
+      window.fetch = function() {
+        return _fetch.apply(this, arguments).then(async (r) => {
+          if (r.url.includes('/cart/add') || r.url.includes('/cart/change') || r.url.includes('/cart/update')) {
+            setTimeout(refreshBar, 600);
+          }
+          return r;
+        });
+      };
+
+      // Ejecución inicial con delay para asegurar que el DOM y scripts estén listos
+      window.addEventListener('load', () => setTimeout(refreshBar, 500));
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:blocks.free_shipping_bar.title",
+  "target": "body",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "t:blocks.free_shipping_bar.enable", "default": true },
+    {
+      "type": "number",
+      "id": "threshold",
+      "label": "t:blocks.free_shipping_bar.free_shipping_goal_label",
+      "default": 100
+    },
+    {
+      "type": "text",
+      "id": "missing_message",
+      "label": "t:blocks.free_shipping_bar.free_shipping_goal_missing_message",
+      "default": "t:blocks.free_shipping_bar.free_shipping_goal_missing_message_default"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "t:blocks.free_shipping_bar.free_shipping_goal_success_message",
+      "default": "t:blocks.free_shipping_bar.free_shipping_goal_success_message_default"
+    },
+    { "type": "color", "id": "bg_color", "label": "t:blocks.free_shipping_bar.background_color", "default": "#000000" },
+    {
+      "type": "color",
+      "id": "bar_fill_color",
+      "label": "t:blocks.free_shipping_bar.background_progress_bar",
+      "default": "#4caf50"
+    },
+    { "type": "color", "id": "text_color", "label": "t:blocks.free_shipping_bar.text_color", "default": "#ffffff" }
+  ]
+}
+{% endschema %}

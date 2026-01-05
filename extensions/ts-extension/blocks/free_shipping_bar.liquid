@@ -1,0 +1,82 @@
+<style>
+  /* Aislamos el estilo para que el tema de la tienda no lo sobrescriba */
+  .shipping-bar-{{ block.id }} {
+    background-color: {{ block.settings.bg_color }} !important;
+    color: {{ block.settings.text_color }} !important;
+    text-align: center !important;
+    padding: 15px !important;
+    font-weight: bold !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important;
+  }
+</style>
+
+<div class="shipping-bar-{{ block.id }}">
+  {% if block.settings.calculation_mode == 'price' %}
+    {% comment %} LÓGICA POR MONTO TOTAL DEL CARRITO {% endcomment %}
+    {% assign threshold = block.settings.threshold | times: 100 %}
+    {% assign cart_total = cart.total_price %}
+
+    {% if cart_total >= threshold %}
+      <span>{{ block.settings.success_message }}</span>
+    {% else %}
+      {% assign remaining = threshold | minus: cart_total | money %}
+      {% comment %} Usamos replace para que el usuario pueda mover el monto en su mensaje {% endcomment %}
+      <span>{{ block.settings.missing_message_price | replace: '[amount]', remaining }}</span>
+    {% endif %}
+
+  {% else %}
+    {% comment %} LÓGICA POR CANTIDAD DE PRODUCTOS {% endcomment %}
+    {% assign threshold_qty = block.settings.threshold_qty %}
+    {% assign cart_qty = cart.item_count %}
+
+    {% if cart_qty >= threshold_qty %}
+      <span>{{ block.settings.success_message }}</span>
+    {% else %}
+      {% assign remaining_qty = threshold_qty | minus: cart_qty %}
+      <span>{{ block.settings.missing_message_qty | replace: '[count]', remaining_qty }}</span>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "t:blocks.free_shipping_bar.title",
+  "target": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "calculation_mode",
+      "label": "Modo de cálculo",
+      "options": [
+        { "value": "price", "label": "Por Precio Total" },
+        { "value": "quantity", "label": "Por Cantidad de Productos" }
+      ],
+      "default": "price"
+    },
+    { "type": "header", "content": "Configuración por Precio" },
+    { "type": "number", "id": "threshold", "label": "Monto para envío gratis", "default": 50 },
+    {
+      "type": "text",
+      "id": "missing_message_price",
+      "label": "Mensaje faltante (usa [amount])",
+      "default": "Faltan [amount] para el envío GRATIS"
+    },
+
+    { "type": "header", "content": "Configuración por Cantidad" },
+    { "type": "number", "id": "threshold_qty", "label": "Productos necesarios", "default": 3 },
+    {
+      "type": "text",
+      "id": "missing_message_qty",
+      "label": "Mensaje faltante (usa [count])",
+      "default": "Agrega [count] productos más para envío GRATIS"
+    },
+
+    { "type": "header", "content": "Diseño" },
+    { "type": "text", "id": "success_message", "label": "Mensaje de éxito", "default": "¡Tienes envío gratis!" },
+    { "type": "color", "id": "bg_color", "label": "Color de fondo", "default": "#000000" },
+    { "type": "color", "id": "text_color", "label": "Color de texto", "default": "#ffffff" }
+  ]
+}
+{% endschema %}
