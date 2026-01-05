@@ -2,7 +2,7 @@
 
 client_id = "db74bd6edd68a6a8f163acbdab02818e"
 name = "InstantTSSections"
-application_url = "https://bands-prove-arrow-somewhere.trycloudflare.com"
+application_url = "https://instan-ts-section.vercel.app"
 embedded = true
 
 [build]
@@ -25,7 +25,7 @@ scopes = "unauthenticated_read_product_listings,read_themes,read_locales"
 
 [auth]
 redirect_urls = [
-  "https://bands-prove-arrow-somewhere.trycloudflare.com/auth/callback",
-  "https://bands-prove-arrow-somewhere.trycloudflare.com/auth/shopify/callback",
-  "https://bands-prove-arrow-somewhere.trycloudflare.com/api/auth"
+  "https://instan-ts-section.vercel.app/auth/callback",
+  "https://instan-ts-section.vercel.app/auth/shopify/callback",
+  "https://instan-ts-section.vercel.app/api/auth"
 ]
