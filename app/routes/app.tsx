@@ -29,6 +29,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const data = await response.json();
   const locale = data.data.shopLocales[0].locale || "en";
 
+  console.log(`api key: ${process.env.SHOPIFY_API_KEY}`);
+  console.log(`locale: ${locale}`);
+
   return {
     apiKey: process.env.SHOPIFY_API_KEY || "",
     locale: locale.startsWith("es") ? "es" : "en",
