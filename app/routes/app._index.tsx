@@ -16,9 +16,9 @@ import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { session, billing } = await authenticate.admin(request);
+  const { session } = await authenticate.admin(request);
 
-  // Manejar el billing AQUÍ, después de la instalación
+  /* Manejar el billing AQUÍ, después de la instalación
   await billing.require({
     plans: ["Plan Basic"],
     onFailure: async () =>
@@ -28,7 +28,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         returnUrl: "/app",
         trialDays: 7, // 7 días de prueba
       }),
-  });
+  }); */
 
   return {
     shopName: session.shop,
