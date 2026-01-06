@@ -16,7 +16,19 @@ import { TitleBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { session } = await authenticate.admin(request);
+  const { session, billing } = await authenticate.admin(request);
+
+  // Manejar el billing AQUÍ, después de la instalación
+  await billing.require({
+    plans: ["Plan Basic"],
+    onFailure: async () =>
+      billing.request({
+        plan: "Plan Basic",
+        isTest: true, // Cambiar a false cuando publiques
+        returnUrl: "/app",
+        trialDays: 7, // 7 días de prueba
+      }),
+  });
 
   return {
     shopName: session.shop,
@@ -197,8 +209,10 @@ export default function Index() {
                   <Text as="span" variant="bodyMd">
                     Status
                   </Text>
-                  <Badge tone="attention">
-                    {locale === "es" ? "Pendiente de activar" : "Pending setup"}
+                  <Badge tone="success">
+                    {locale === "es"
+                      ? "Activo - Prueba gratis"
+                      : "Active - Free trial"}
                   </Badge>
                 </InlineStack>
               </BlockStack>
@@ -212,7 +226,7 @@ export default function Index() {
                 <Text as="p" variant="bodyMd">
                   {t.supportText}
                 </Text>
-                <Button variant="secondary" url="mailto:support@yourapp.com">
+                <Button variant="secondary" url="mailto:paalvarador@gmail.com">
                   {locale === "es" ? "Contactar soporte" : "Contact support"}
                 </Button>
               </BlockStack>

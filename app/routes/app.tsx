@@ -11,16 +11,7 @@ import "@shopify/polaris/build/esm/styles.css";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { admin, billing } = await authenticate.admin(request);
-
-  await billing.require({
-    plans: ["Plan Basic"],
-    onFailure: async () =>
-      billing.request({
-        plan: "Plan Basic",
-        isTest: true, // Cambiar a False cuando se publique
-      }),
-  });
+  const { admin } = await authenticate.admin(request);
 
   // Consultar el idioma oificial de la tienda mediante GraphQL
   const response = await admin.graphql(

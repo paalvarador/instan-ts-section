@@ -20,7 +20,8 @@
       "free_shipping_goal_success_message_default": "Free shipping achieved! 🚚",
       "background_color": "Background color",
       "background_progress_bar": "Background progress bar",
-      "text_color": "Text color"
+      "text_color": "Text color",
+      "calculating": "Calculating shipping... 🚚"
     },
     "trust_budges": {
       "title": "Secure Payment",

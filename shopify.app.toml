@@ -3,7 +3,7 @@
 client_id = "db74bd6edd68a6a8f163acbdab02818e"
 name = "InstantTSSections"
 application_url = "https://instan-ts-section.vercel.app"
-embedded = true
+embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
