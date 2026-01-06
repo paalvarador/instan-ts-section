@@ -15,7 +15,7 @@ const shopify = shopifyApp({
   apiVersion: ApiVersion.October25,
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
-  billing: {
+  /*billing: {
     "Plan Basic": {
       lineItems: [
         {
@@ -27,7 +27,7 @@ const shopify = shopifyApp({
       trialDays: 7,
       replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
     },
-  },
+  },*/
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
