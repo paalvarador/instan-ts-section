@@ -42,8 +42,7 @@ export default function Index() {
                   Welcome, {shopName}
                 </Text>
                 <Text as="p" variant="bodyMd">
-                  Enable free shipping bars, trust badges, and urgency offers to
-                  increase conversions.
+                  Add countdown timers, dynamic shipping bars, and secure payment badges to your store.
                 </Text>
               </BlockStack>
             </Card>
