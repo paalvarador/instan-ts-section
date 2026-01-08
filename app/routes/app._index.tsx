@@ -20,11 +20,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return {
     shopName: session.shop,
+    contactSupport: process.env.CONTACT_EMAIL || "paalvarador@gmail.com",
   };
 };
 
 export default function Index() {
-  const { shopName } = useLoaderData<typeof loader>();
+  const { shopName, contactSupport } = useLoaderData<typeof loader>();
 
   return (
     <Page>
@@ -182,7 +183,7 @@ export default function Index() {
                 </Text>
                 <Button
                   variant="secondary"
-                  url="mailto:paalvarador@gmail.com"
+                  url={`mailto:${contactSupport}`}
                   target="_blank"
                 >
                   Contact support

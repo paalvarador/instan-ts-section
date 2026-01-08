@@ -2,12 +2,11 @@
 
 client_id = "ef1c5f1c397aec0daf8d440b48e43a4f"
 name = "instant-ts-sections"
-application_url = "https://example.com"
+application_url = "https://instan-ts-section.onrender.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-include_config_on_deploy = true
 
 [webhooks]
 api_version = "2026-04"
@@ -17,4 +16,4 @@ api_version = "2026-04"
 scopes = "read_locales,read_themes,unauthenticated_read_product_listings"
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [ "https://instan-ts-section.onrender.com/auth" ]
