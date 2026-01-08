@@ -1,0 +1,35 @@
+{
+  "blocks": {
+    "flash_banner": {
+      "title": "Banner Oferta Flash",
+      "message": "Mensaje",
+      "background": "Fondo",
+      "text_color": "Color de texto",
+      "content": "Configuración de tiempo",
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos"
+    },
+    "free_shipping_bar": {
+      "title": "Barra de envío gratis",
+      "enable": "Activar",
+      "free_shipping_goal_label": "Meta (Monto)",
+      "free_shipping_goal_missing_message": "Mensaje faltante",
+      "free_shipping_goal_missing_message_default": "¡Faltan [amount] para envío gratis!",
+      "free_shipping_goal_success_message": "¡Envío GRATIS conseguido! 🚚",
+      "free_shipping_goal_success_message_default": "¡Envío GRATIS conseguido! 🚚",
+      "background_color": "Color de fondo",
+      "background_progress_bar": "Color de fondo barra de progreso",
+      "text_color": "Color de texto",
+      "calculating": "Calculando envío... 🚚"
+    },
+    "trust_budges": {
+      "title": "Pago Seguro",
+      "message": "Pago 100% seguro",
+      "show_visa": "Mostrar Visa",
+      "show_mastercard": "Mostrar Mastercard",
+      "show_paypal": "Mostrar Paypal",
+      "show_amex": "Mostrar American Express"
+    }
+  }
+}

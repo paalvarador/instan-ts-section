@@ -57,18 +57,23 @@
 
 {% schema %}
 {
-  "name": "t:blocks.flash_banner.title",
+  "name": "Flash Banner Offer",
   "target": "section",
   "settings": [
-    { "type": "text", "id": "message", "label": "t:blocks.flash_banner.message", "default": "¡OFERTA TERMINA EN:" },
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "default": "Limited Time Offer!"
+    },
     {
       "type": "color_background",
       "id": "gradient",
-      "label": "t:blocks.flash_banner.background",
+      "label": "Background",
       "default": "linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,154,0,1) 100%)"
     },
-    { "type": "color", "id": "text_color", "label": "t:blocks.flash_banner.text_color", "default": "#ffffff" },
-    { "type": "header", "content": "t:blocks.flash_banner.content" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" },
+    { "type": "header", "content": "Time configuration" },
     {
       "type": "range",
       "id": "hours",
@@ -76,7 +81,7 @@
       "max": 24,
       "step": 1,
       "unit": "h",
-      "label": "t:blocks.flash_banner.hours",
+      "label": "Hours",
       "default": 2
     },
     {
@@ -86,7 +91,7 @@
       "max": 59,
       "step": 1,
       "unit": "m",
-      "label": "t:blocks.flash_banner.minutes",
+      "label": "Minutes",
       "default": 0
     },
     {
@@ -96,7 +101,7 @@
       "max": 59,
       "step": 1,
       "unit": "s",
-      "label": "t:blocks.flash_banner.seconds",
+      "label": "Seconds",
       "default": 0
     }
   ]

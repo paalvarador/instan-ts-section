@@ -53,10 +53,10 @@
 
 {% schema %}
 {
-  "name": "t:blocks.trust_budges.title",
+  "name": "Secure Payment",
   "target": "section",
   "settings": [
-    { "type": "text", "id": "title", "label": "t:blocks.trust_budges.message", "default": "Pago 100% Seguro" },
+    { "type": "text", "id": "title", "label": "Message", "default": "100% Secure Payment" },
     {
       "type": "range",
       "id": "icon_width",
@@ -64,13 +64,13 @@
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Ancho de iconos",
+      "label": "Icon width",
       "default": 40
     },
-    { "type": "checkbox", "id": "show_visa", "label": "t:blocks.trust_budges.show_visa", "default": true },
-    { "type": "checkbox", "id": "show_master", "label": "t:blocks.trust_budges.show_mastercard", "default": true },
-    { "type": "checkbox", "id": "show_paypal", "label": "t:blocks.trust_budges.show_paypal", "default": true },
-    { "type": "checkbox", "id": "show_amex", "label": "t:blocks.trust_budges.show_amex", "default": true }
+    { "type": "checkbox", "id": "show_visa", "label": "Show Visa", "default": true },
+    { "type": "checkbox", "id": "show_master", "label": "Show Mastercard", "default": true },
+    { "type": "checkbox", "id": "show_paypal", "label": "Show Paypal", "default": true },
+    { "type": "checkbox", "id": "show_amex", "label": "Show American Express", "default": true }
   ]
 }
 {% endschema %}

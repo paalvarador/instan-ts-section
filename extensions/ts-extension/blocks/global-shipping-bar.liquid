@@ -48,7 +48,7 @@
       id="bar-text-{{ block.id }}"
       style="text-align: center !important; font-weight: bold !important; font-family: sans-serif !important;"
     >
-      Calculando envío...
+      Calculating shipping... 🚚
     </div>
     <div class="progress-outer-{{ block.id }}">
       <div id="progress-fill-{{ block.id }}"></div>
@@ -134,36 +134,36 @@
 
 {% schema %}
 {
-  "name": "t:blocks.free_shipping_bar.title",
+  "name": "Free Shipping Bar",
   "target": "body",
   "settings": [
-    { "type": "checkbox", "id": "enabled", "label": "t:blocks.free_shipping_bar.enable", "default": true },
+    { "type": "checkbox", "id": "enabled", "label": "Enable", "default": true },
     {
       "type": "number",
       "id": "threshold",
-      "label": "t:blocks.free_shipping_bar.free_shipping_goal_label",
+      "label": "Goal (Amount)",
       "default": 100
     },
     {
       "type": "text",
       "id": "missing_message",
-      "label": "t:blocks.free_shipping_bar.free_shipping_goal_missing_message",
-      "default": "t:blocks.free_shipping_bar.free_shipping_goal_missing_message_default"
+      "label": "Missing message",
+      "default": "Only [amount] left for free shipping!"
     },
     {
       "type": "text",
       "id": "success_message",
-      "label": "t:blocks.free_shipping_bar.free_shipping_goal_success_message",
-      "default": "t:blocks.free_shipping_bar.free_shipping_goal_success_message_default"
+      "label": "Success message",
+      "default": "Free shipping achieved! 🚚"
     },
-    { "type": "color", "id": "bg_color", "label": "t:blocks.free_shipping_bar.background_color", "default": "#000000" },
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#000000" },
     {
       "type": "color",
       "id": "bar_fill_color",
-      "label": "t:blocks.free_shipping_bar.background_progress_bar",
+      "label": "Progress bar color",
       "default": "#4caf50"
     },
-    { "type": "color", "id": "text_color", "label": "t:blocks.free_shipping_bar.text_color", "default": "#ffffff" }
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" }
   ]
 }
 {% endschema %}

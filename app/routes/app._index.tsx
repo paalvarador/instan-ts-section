@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "react-router";
-import { useLoaderData, useOutletContext } from "react-router";
+import { useLoaderData } from "react-router";
 import {
   Page,
   Layout,
@@ -18,18 +18,6 @@ import { authenticate } from "../shopify.server";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
 
-  /* Manejar el billing AQUÍ, después de la instalación
-  await billing.require({
-    plans: ["Plan Basic"],
-    onFailure: async () =>
-      billing.request({
-        plan: "Plan Basic",
-        isTest: true, // Cambiar a false cuando publiques
-        returnUrl: "/app",
-        trialDays: 7, // 7 días de prueba
-      }),
-  }); */
-
   return {
     shopName: session.shop,
   };
@@ -37,42 +25,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Index() {
   const { shopName } = useLoaderData<typeof loader>();
-  const { locale } = useOutletContext<{ locale: string }>();
-
-  const t = {
-    title: locale === "es" ? "Instant TS Sections" : "Instant TS Sections",
-    welcome:
-      locale === "es" ? `Bienvenido, ${shopName}` : `Welcome, ${shopName}`,
-    subtitle:
-      locale === "es"
-        ? "Activa barras de envío gratis, sellos de confianza y ofertas con urgencia para aumentar tus conversiones."
-        : "Enable free shipping bars, trust badges, and urgency offers to increase conversions.",
-    stepsTitle: locale === "es" ? "Primeros pasos" : "Getting started",
-    step1:
-      locale === "es"
-        ? "Activa el App Embed de Free Shipping Bar desde el Editor de Temas."
-        : "Enable the Free Shipping Bar app embed from the Theme Editor.",
-    step2:
-      locale === "es"
-        ? "Agrega la sección Secure Payments en la página de producto."
-        : "Add the Secure Payments section to your product page.",
-    step3:
-      locale === "es"
-        ? "Configura el Flash Banner Offer para crear urgencia en tus promociones."
-        : "Configure the Flash Banner Offer to create urgency in your promotions.",
-    openEditor: locale === "es" ? "Abrir Editor de Temas" : "Open Theme Editor",
-    extensionsTitle:
-      locale === "es" ? "Extensiones disponibles" : "Available extensions",
-    supportTitle: locale === "es" ? "Soporte" : "Support",
-    supportText:
-      locale === "es"
-        ? "¿Necesitas ayuda con la configuración? Nuestro equipo puede ayudarte."
-        : "Need help with setup? Our team is here to help.",
-  };
 
   return (
     <Page>
-      <TitleBar title={t.title} />
+      <TitleBar title="Instant TS Sections" />
 
       <Layout>
         {/* MAIN COLUMN */}
@@ -82,10 +38,11 @@ export default function Index() {
             <Card>
               <BlockStack gap="300">
                 <Text as="h1" variant="headingLg">
-                  {t.welcome}
+                  Welcome, {shopName}
                 </Text>
                 <Text as="p" variant="bodyMd">
-                  {t.subtitle}
+                  Enable free shipping bars, trust badges, and urgency offers to
+                  increase conversions.
                 </Text>
               </BlockStack>
             </Card>
@@ -94,28 +51,36 @@ export default function Index() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h2" variant="headingMd">
-                  {t.stepsTitle}
+                  Getting started
                 </Text>
 
                 <List>
                   <List.Item>
                     <InlineStack gap="200">
                       <Badge tone="attention">1</Badge>
-                      <Text as="span">{t.step1}</Text>
+                      <Text as="span">
+                        Enable the Free Shipping Bar app embed from the Theme
+                        Editor.
+                      </Text>
                     </InlineStack>
                   </List.Item>
 
                   <List.Item>
                     <InlineStack gap="200">
                       <Badge tone="attention">2</Badge>
-                      <Text as="span">{t.step2}</Text>
+                      <Text as="span">
+                        Add the Secure Payments section to your product page.
+                      </Text>
                     </InlineStack>
                   </List.Item>
 
                   <List.Item>
                     <InlineStack gap="200">
                       <Badge tone="attention">3</Badge>
-                      <Text as="span">{t.step3}</Text>
+                      <Text as="span">
+                        Configure the Flash Banner Offer to create urgency in
+                        your promotions.
+                      </Text>
                     </InlineStack>
                   </List.Item>
                 </List>
@@ -124,9 +89,9 @@ export default function Index() {
                   <Button
                     variant="primary"
                     url="shopify:admin/themes/current/editor"
-                    target="_top"
+                    target="_blank"
                   >
-                    {t.openEditor}
+                    Open Theme Editor
                   </Button>
                 </InlineStack>
               </BlockStack>
@@ -136,7 +101,7 @@ export default function Index() {
             <Card>
               <BlockStack gap="400">
                 <Text as="h2" variant="headingMd">
-                  {t.extensionsTitle}
+                  Available extensions
                 </Text>
 
                 <Divider />
@@ -149,13 +114,9 @@ export default function Index() {
                           Free Shipping Bar
                         </Text>
                         <Text as="p" variant="bodyMd">
-                          {locale === "es"
-                            ? "Muestra al cliente cuánto le falta para obtener envío gratis."
-                            : "Show customers how close they are to free shipping."}
+                          Show customers how close they are to free shipping.
                         </Text>
-                        <Badge tone="warning">
-                          {locale === "es" ? "App Embed" : "App Embed"}
-                        </Badge>
+                        <Badge tone="warning">App Embed</Badge>
                       </BlockStack>
                     </Card>
                   </Layout.Section>
@@ -167,11 +128,10 @@ export default function Index() {
                           Secure Payments
                         </Text>
                         <Text as="p" variant="bodyMd">
-                          {locale === "es"
-                            ? "Muestra métodos de pago seguros para generar confianza."
-                            : "Display trusted payment methods to increase confidence."}
+                          Display trusted payment methods to increase
+                          confidence.
                         </Text>
-                        <Badge>{locale === "es" ? "Sección" : "Section"}</Badge>
+                        <Badge>Section</Badge>
                       </BlockStack>
                     </Card>
                   </Layout.Section>
@@ -183,11 +143,9 @@ export default function Index() {
                           Flash Banner Offer
                         </Text>
                         <Text as="p" variant="bodyMd">
-                          {locale === "es"
-                            ? "Crea urgencia con un temporizador de ofertas."
-                            : "Create urgency with a countdown offer banner."}
+                          Create urgency with a countdown offer banner.
                         </Text>
-                        <Badge>{locale === "es" ? "Sección" : "Section"}</Badge>
+                        <Badge>Section</Badge>
                       </BlockStack>
                     </Card>
                   </Layout.Section>
@@ -209,11 +167,7 @@ export default function Index() {
                   <Text as="span" variant="bodyMd">
                     Status
                   </Text>
-                  <Badge tone="success">
-                    {locale === "es"
-                      ? "Activo - Prueba gratis"
-                      : "Active - Free trial"}
-                  </Badge>
+                  <Badge tone="success">Active - Free trial</Badge>
                 </InlineStack>
               </BlockStack>
             </Card>
@@ -221,13 +175,17 @@ export default function Index() {
             <Card>
               <BlockStack gap="200">
                 <Text as="h2" variant="headingMd">
-                  {t.supportTitle}
+                  Support
                 </Text>
                 <Text as="p" variant="bodyMd">
-                  {t.supportText}
+                  Need help with setup? Our team is here to help.
                 </Text>
-                <Button variant="secondary" url="mailto:paalvarador@gmail.com">
-                  {locale === "es" ? "Contactar soporte" : "Contact support"}
+                <Button
+                  variant="secondary"
+                  url="mailto:paalvarador@gmail.com"
+                  target="_blank"
+                >
+                  Contact support
                 </Button>
               </BlockStack>
             </Card>

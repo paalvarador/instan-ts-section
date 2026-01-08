@@ -1,0 +1,35 @@
+{
+  "blocks": {
+    "flash_banner": {
+      "title": "Flash Banner Offer",
+      "message": "Message",
+      "background": "Background",
+      "text_color": "Text color",
+      "content": "Time configuration",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds"
+    },
+    "free_shipping_bar": {
+      "title": "Free Shipping Bar",
+      "enable": "Enable",
+      "free_shipping_goal_label": "Goal (Amount)",
+      "free_shipping_goal_missing_message": "Missing message",
+      "free_shipping_goal_missing_message_default": "Only [amount] left for free shipping!",
+      "free_shipping_goal_success_message": "Free shipping achieved! 🚚",
+      "free_shipping_goal_success_message_default": "Free shipping achieved! 🚚",
+      "background_color": "Background color",
+      "background_progress_bar": "Background progress bar",
+      "text_color": "Text color",
+      "calculating": "Calculating shipping... 🚚"
+    },
+    "trust_budges": {
+      "title": "Secure Payment",
+      "message": "100% Secure Payment",
+      "show_visa": "Show Visa",
+      "show_mastercard": "Show Mastercard",
+      "show_paypal": "Show Paypal",
+      "show_amex": "Show American Express"
+    }
+  }
+}
